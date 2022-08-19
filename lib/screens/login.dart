@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/snackbar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -164,6 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                                       });
                                       try {
                                         final auth = FirebaseAuth.instance;
+                                        final prefs = await SharedPreferences.getInstance();
 
                                         UserCredential currentUser = await auth
                                             .signInWithEmailAndPassword(
@@ -174,6 +175,9 @@ class _LoginPageState extends State<LoginPage> {
                                           _submitted = false;
                                           isLoading = false;
                                         });
+
+                                        await prefs.setString('email', emailController.text);
+                                        
                                         showSnackbar(context,"Login successful !",3,Colors.green);
                                         Navigator.pushReplacementNamed(context, '/home');
                                         emailController.clear();

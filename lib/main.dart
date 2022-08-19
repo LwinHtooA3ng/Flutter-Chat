@@ -6,11 +6,15 @@ import './screens/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+    
   );
   runApp(const FlutterChat());
 }
@@ -40,7 +44,7 @@ class FlutterChat extends StatelessWidget {
         ),
       ),
       title: "Flutter Chat",
-      initialRoute: "/",
+      initialRoute: (FirebaseAuth.instance.currentUser == null) ? "/" : "/home",
       routes: {
         "/": (context) => const LandingScreen(),
         '/register': (context) => const RegisterPage(),

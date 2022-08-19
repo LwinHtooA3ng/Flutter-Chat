@@ -100,7 +100,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 style: ElevatedButton.styleFrom(
                                     elevation: 0, primary: Colors.white),
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/login');
+                                  Navigator.pushReplacementNamed(context, '/login');
                                 },
                                 child: const Text(
                                   "Login",
@@ -118,7 +118,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                     side: const BorderSide(
                                         width: 1, color: Colors.white)),
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/register');
+                                  Navigator.pushReplacementNamed(context, '/register');
                                 },
                                 child: const Text("Register"))),
                       ],
