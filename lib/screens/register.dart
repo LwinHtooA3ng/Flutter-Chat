@@ -20,6 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +103,34 @@ class _RegisterPageState extends State<RegisterPage> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 5, horizontal: 3),
                               child: Text(
+                                "Name",
+                                style: TextStyle(
+                                  color: Colors.grey[800],
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: nameController,
+                              cursorColor: Colors.teal,
+                              // style: TextStyle(color: Colors.grey[800]),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Name required";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: "Enter your name",
+                                hintStyle: const TextStyle(fontSize: 12),
+                                labelStyle: TextStyle(color: Colors.grey[800]),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 3),
+                              child: Text(
                                 "Password",
                                 style: TextStyle(
                                     color: Colors.grey[800],
@@ -169,12 +198,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                         final newUser = await auth
                                             .createUserWithEmailAndPassword(
-                                                email: emailController.text,
-                                                password:
-                                                    passwordController.text,
-                                              
-                                                );
-                                                
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        );
+                                        await FirebaseAuth.instance.currentUser!
+                                            .updateProfile(
+                                                displayName:
+                                                    nameController.text);
+
                                         // print(newUser);
                                         setState(() {
                                           isLoading = false;
@@ -227,7 +258,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       : const Text("Register")),
                             ),
                             const SizedBox(
-                              height: 25,
+                              height: 20,
                             ),
                             Row(children: <Widget>[
                               const Expanded(
@@ -250,7 +281,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               )),
                             ]),
                             const SizedBox(
-                              height: 25,
+                              height: 20,
                             ),
                             SizedBox(
                               height: 45,
@@ -277,7 +308,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 60),
+                          padding: const EdgeInsets.only(bottom: 25),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

@@ -7,26 +7,35 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 class MessageCard extends StatelessWidget {
   String text;
   String sender;
+  String name;
   bool isSendByMe;
   MessageCard(
       {Key? key,
       required this.text,
       required this.sender,
+      required this.name,
       required this.isSendByMe})
       : super(key: key);
 
   @override
-
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
-        crossAxisAlignment: isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Text(sender, style: const TextStyle(fontSize: 10, color: Colors.grey),),
+          Text(
+            name,
+            style: const TextStyle(fontSize: 10, color: Colors.grey),
+          ),
           ChatBubble(
-            clipper: ChatBubbleClipper5(type: (isSendByMe) ? BubbleType.sendBubble : BubbleType.receiverBubble),
-            alignment: isSendByMe ? Alignment.bottomRight : Alignment.centerLeft,
+            clipper: ChatBubbleClipper5(
+                type: (isSendByMe)
+                    ? BubbleType.sendBubble
+                    : BubbleType.receiverBubble),
+            alignment:
+                isSendByMe ? Alignment.bottomRight : Alignment.centerLeft,
             margin: const EdgeInsets.only(top: 4, bottom: 4),
             backGroundColor: isSendByMe ? Colors.teal : Colors.white,
             child: Container(
@@ -35,7 +44,8 @@ class MessageCard extends StatelessWidget {
               ),
               child: Text(
                 text,
-                style: TextStyle(color: isSendByMe ?  Colors.white : Colors.grey[900]),
+                style: TextStyle(
+                    color: isSendByMe ? Colors.white : Colors.grey[900]),
               ),
             ),
           ),
