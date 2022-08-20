@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../components/message_card.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -17,20 +18,35 @@ class _HomeState extends State<Home> {
 
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
-  
 
-  void getMessage() async {
-    final message = await _firestore.collection("flutter_chat").get();
-    for (var message in message.docs) {
-      print(">>>>");
-      print(message.data());
-    }
-  }
+  // void getMessage() async {
+  //   final message = await _firestore.collection("flutter_chat").get();
+  //   for (var message in message.docs) {
+  //     print(">>>>");
+  //     print(message.data());
+  //   }
+  // }
+
+  // void getMessageStream() async {
+  //   await for (var snapshot
+  //       in _firestore.collection("flutter_chat").snapshots()) {
+  //     for (var message in snapshot.docs) {
+  //       // print("...");
+  //       // print(message.data());
+  //     }
+  //   }
+  // }
 
   checkLogin() {
     if (FirebaseAuth.instance.currentUser == null) {
       Navigator.pushReplacementNamed(context, "/login");
     }
+  }
+
+  @override
+  void initState() {
+    // getMessageStream();
+    super.initState();
   }
 
   @override
@@ -64,14 +80,53 @@ class _HomeState extends State<Home> {
                     icon: const FaIcon(
                       FontAwesomeIcons.arrowRightFromBracket,
                       size: 18,
-                    ))
+                    )),
               ],
             ),
           ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(flex: 6, child: Container()),
+              Expanded(
+                  flex: 6,
+                  child: Container(
+                    // padding: EdgeInsets.symmetric(vertical: 10),
+                    child: StreamBuilder<QuerySnapshot>(
+                      // stream: _firestore.collection("flutter_chat").orderBy('time_field', descending: true).snapshots(),
+                      // stream: _firestore.collection("flutter_chat").orderBy('time_field', descending: true).snapshots(),
+                      stream: _firestore.collection("flutter_chat").orderBy('timestamp', descending: false).snapshots(),
+                      builder: (context, snapshot) {
+                        List<MessageCard> messageWidgets = [];
+                        if (snapshot.hasData) {
+                          var messages = snapshot.data!.docs;
+                          // for (var message in messages) {
+                          //   var messageText = message;
+                          //   final sender = messageText['sender'];
+                          //   final text = messageText["text"];
+
+                          //   final messageWidget = Text("$text from $sender");
+                          //   messageWidgets.add(messageWidget);
+                          // }
+                          for (var message in messages) {
+                            messageWidgets.add(MessageCard(
+                                text: message['text'],
+                                sender: message['sender'],
+                                isSendByMe:
+                                    FirebaseAuth.instance.currentUser!.email ==
+                                            message['sender']
+                                        ? true
+                                        : false));
+                          }
+                        }
+                        return SingleChildScrollView(
+                          reverse: true,
+                          child: Column(
+                            children: messageWidgets,
+                          ),
+                        );
+                      },
+                    ),
+                  )),
               Container(
                 // color: Colors.grey[700],
                 color: Colors.grey[200],
@@ -86,7 +141,8 @@ class _HomeState extends State<Home> {
                           maxLines: 2,
                           controller: messageController,
                           cursorColor: Colors.teal,
-                          style: TextStyle(color: Colors.grey[800], fontSize: 15),
+                          style:
+                              TextStyle(color: Colors.grey[800], fontSize: 15),
                           decoration: InputDecoration(
                             // fillColor: Colors.grey[800],
                             fillColor: Colors.grey[300],
@@ -94,7 +150,8 @@ class _HomeState extends State<Home> {
                             hintStyle: const TextStyle(fontSize: 12),
                             filled: true,
                             isDense: true,
-                            contentPadding: const EdgeInsets.fromLTRB(15, 7, 15, 7),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(15, 7, 15, 7),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(50.0),
@@ -119,20 +176,24 @@ class _HomeState extends State<Home> {
                                 primary: Colors.teal,
                                 padding: EdgeInsets.zero),
                             onPressed: () async {
-                              final prefs = await SharedPreferences.getInstance();
-                              final String? email =
-                                  prefs.getString('email');
-                              _firestore.collection("flutter_chat").add({
-                                "sender": email,
-                                "text": messageController.text
-                              });
-                              messageController.clear();
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final String? email = prefs.getString('email');
+                              if (messageController.text.isNotEmpty) {
+                                _firestore.collection("flutter_chat").add({
+                                  "sender": email,
+                                  "text": messageController.text,
+                                  "timestamp": DateTime.now()
+                                });
+                                messageController.clear();
+                              }
                             },
-                            child: const FaIcon(
-                              FontAwesomeIcons.arrowUp,
-                              color: Colors.white,
-                              size: 15,
-                            )
+                            child: 
+                               const FaIcon(
+                                    FontAwesomeIcons.arrowUp,
+                                    color: Colors.white,
+                                    size: 15,
+                                  )
                             // child: Icon(
                             //   Icons.arrow_upward_rounded,
                             //   size: 20,

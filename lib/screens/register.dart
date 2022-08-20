@@ -171,7 +171,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                             .createUserWithEmailAndPassword(
                                                 email: emailController.text,
                                                 password:
-                                                    passwordController.text);
+                                                    passwordController.text,
+                                              
+                                                );
+                                                
                                         // print(newUser);
                                         setState(() {
                                           isLoading = false;
