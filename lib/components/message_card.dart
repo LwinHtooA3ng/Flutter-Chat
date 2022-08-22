@@ -20,7 +20,7 @@ class MessageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Column(
         crossAxisAlignment:
             isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,

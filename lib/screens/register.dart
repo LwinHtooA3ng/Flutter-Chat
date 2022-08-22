@@ -211,8 +211,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                           isLoading = false;
                                           _submitted = false;
                                         });
-                                        showSnackbar(context,"Register successful !",3,Colors.green);
-                                        Navigator.pushReplacementNamed(context, '/login');
+                                        showSnackbar(
+                                            context,
+                                            "Register successful !",
+                                            3,
+                                            Colors.green);
+                                        Navigator.pushReplacementNamed(
+                                            context, '/login');
                                         emailController.clear();
                                         passwordController.clear();
                                       } on FirebaseAuthException catch (e) {

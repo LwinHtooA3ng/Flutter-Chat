@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                               height: 15,
                             ),
                             Text(
-                              "Welcome Back !",
+                              "Welcome Back",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 23,
@@ -163,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                                         isLoading = true;
                                       });
                                       try {
+                                        
                                         final auth = FirebaseAuth.instance;
                                         final prefs = await SharedPreferences.getInstance();
 
